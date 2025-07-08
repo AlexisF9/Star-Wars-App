@@ -12,6 +12,7 @@ npm i
 ```
 npm run dev
 ```
+🚀 Une fois le front lancé allez sur http://localhost:5173
 
 ### Backend
 
@@ -23,3 +24,4 @@ npm i
 ```
 npm run dev
 ```
+🚀 Une fois le backend lancé utilisez l'adresse http://localhost:3000
