@@ -3,15 +3,16 @@ import { searchSwapi } from '../services/swapi.service';
 
 export const searchHandler = async (req: Request, res: Response) => {
   // requête entrante
-  const query = req.query.q as string;
+  const category = req.query.cat as string;
+  const text = req.query.q as string;
 
-  if (!query) {
+  if (!text) {
     return res.status(400).json({ error: 'Missing search query (?q=)' });
   }
 
   try {
-    // apple le service searchSwapi qui contient la logique d'appel à l'API SWAPI
-    const results = await searchSwapi(query);
+    // appel le service searchSwapi qui contient la logique d'appel à l'API SWAPI
+    const results = await searchSwapi(category, text)
 
     // réponse du service au format json
     res.status(200).json(results);

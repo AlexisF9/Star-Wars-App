@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { useDebounce } from "./hooks/useDebounce";
 
-const fetchSearch = async (text: string) => {
-  const url = `http://localhost:3000/api/search?q=${text}`;
+const fetchSearch = async (cat: string, text: string) => {
+  const url = `http://localhost:3000/api/search?cat=${cat}&q=${text}`;
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -18,44 +17,62 @@ const fetchSearch = async (text: string) => {
 function App() {
   const [searchCategory, setSearchCategory] = useState("films");
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 500); // 500 ms de délai
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["searchUser", searchTerm],
-    queryFn: () => fetchSearch(searchTerm),
+    queryFn: () => fetchSearch(searchCategory, searchTerm),
     enabled: false, // Ne lance pas automatiquement
   });
 
-  useEffect(() => {
-    if (debouncedSearch) {
-      refetch(); // se déclenche uniquement après le délai
-    }
-  }, [debouncedSearch, refetch]);
-
   const categories = [
-    "films",
-    "people",
-    "planets",
-    "species",
-    "vehicles",
-    "starships",
+    {
+      label: "Films",
+      name: "films",
+    },
+    {
+      label: "People",
+      name: "people",
+    },
+    {
+      label: "Planets",
+      name: "planets",
+    },
+    {
+      label: "Species",
+      name: "species",
+    },
+    {
+      label: "Vehicles",
+      name: "vehicles",
+    },
+    {
+      label: "Starships",
+      name: "starships",
+    },
   ];
+
+  useEffect(() => {
+    if (searchTerm !== "") {
+      refetch();
+    }
+  }, [searchCategory, searchTerm, refetch]);
 
   return (
     <>
       <h1>Star Wars Rebels Alliance Search System</h1>
 
       <form>
-        <div>
+        <div className="flex flex-wrap gap-4 items-center">
           {categories.map((item, index) => {
             return (
-              <div key={index}>
-                <label htmlFor={item}>{item}</label>
+              <div key={index} className="flex items-center gap-2">
+                <label htmlFor={item.name}>{item.label}</label>
                 <input
                   type="radio"
                   name="radio"
-                  value={item}
-                  defaultChecked={item === searchCategory}
+                  id={item.name}
+                  value={item.name}
+                  defaultChecked={item.name === searchCategory}
                   className="radio"
                   onChange={(e) => setSearchCategory(e.target.value)}
                 />
@@ -71,17 +88,27 @@ function App() {
         />
       </form>
 
-      {isLoading ? (
-        <p>loading...</p>
-      ) : (
-        data && (
+      {data ? (
+        data.length > 0 ? (
           <ul>
-            {data.people.map((el: any, index: number) => {
-              return <li key={index}>{el.name}</li>;
+            {data.map((el: any, index: number) => {
+              return (
+                <li key={index}>
+                  <div className="card w-96 bg-base-100 card-xs shadow-sm">
+                    <div className="card-body">
+                      <h2 className="card-title">
+                        {searchCategory === "films" ? el.title : el.name}
+                      </h2>
+                    </div>
+                  </div>
+                </li>
+              );
             })}
           </ul>
+        ) : (
+          data && data.length === 0 && searchTerm !== "" && <p>No results</p>
         )
-      )}
+      ) : null}
     </>
   );
 }
