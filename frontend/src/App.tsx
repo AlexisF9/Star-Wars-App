@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "./App.css";
 import { useEffect, useState } from "react";
+import { MoveRight } from "lucide-react";
 
 const fetchSearch = async (cat: string, text: string) => {
   const url = `http://localhost:3000/api/search?cat=${cat}&q=${text}`;
@@ -15,8 +16,10 @@ const fetchSearch = async (cat: string, text: string) => {
 };
 
 function App() {
-  const [searchCategory, setSearchCategory] = useState("films");
+  const [searchCategory, setSearchCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const queryClient = useQueryClient();
 
   const { data, refetch } = useQuery({
     queryKey: ["searchUser", searchTerm],
@@ -52,55 +55,70 @@ function App() {
   ];
 
   useEffect(() => {
-    if (searchTerm !== "") {
+    if (searchTerm !== "" && searchCategory !== "") {
       refetch();
+    } else {
+      queryClient.removeQueries({ queryKey: ["searchUser"] });
     }
   }, [searchCategory, searchTerm, refetch]);
 
-  return (
-    <>
-      <h1>Star Wars Rebels Alliance Search System</h1>
+  console.log(data);
 
-      <form>
-        <div className="flex flex-wrap gap-4 items-center">
+  return (
+    <main className="max-w-4xl mx-auto px-2 pb-6">
+      <h1 className="bold text-2xl my-12">
+        🚀 Star Wars Rebels Alliance Search System
+      </h1>
+
+      <form className="mb-6 flex flex-col gap-4">
+        <div className="filter">
+          <input
+            className="btn btn-square"
+            type="reset"
+            onClick={() => {
+              setSearchCategory("");
+              setSearchTerm("");
+            }}
+            value={"x"}
+          />
+
           {categories.map((item, index) => {
             return (
-              <div key={index} className="flex items-center gap-2">
-                <label htmlFor={item.name}>{item.label}</label>
-                <input
-                  type="radio"
-                  name="radio"
-                  id={item.name}
-                  value={item.name}
-                  defaultChecked={item.name === searchCategory}
-                  className="radio"
-                  onChange={(e) => setSearchCategory(e.target.value)}
-                />
-              </div>
+              <input
+                key={index}
+                type="radio"
+                name="radio"
+                value={item.name}
+                className="btn"
+                aria-label={item.label}
+                onChange={(e) => setSearchCategory(e.target.value)}
+              />
             );
           })}
         </div>
         <input
           type="text"
           placeholder="Type here"
-          className="input"
+          className="input w-full"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
 
       {data ? (
         data.length > 0 ? (
-          <ul>
+          <ul className="list bg-base-100 rounded-box shadow-md">
             {data.map((el: any, index: number) => {
               return (
-                <li key={index}>
-                  <div className="card w-96 bg-base-100 card-xs shadow-sm">
-                    <div className="card-body">
-                      <h2 className="card-title">
-                        {searchCategory === "films" ? el.title : el.name}
-                      </h2>
-                    </div>
+                <li
+                  key={index}
+                  className="list-row flex items-center flex-wrap justify-between"
+                >
+                  <div>
+                    <h2> {searchCategory === "films" ? el.title : el.name}</h2>
                   </div>
+                  <button className="btn btn-square btn-ghost">
+                    <MoveRight />
+                  </button>
                 </li>
               );
             })}
@@ -109,7 +127,7 @@ function App() {
           data && data.length === 0 && searchTerm !== "" && <p>No results</p>
         )
       ) : null}
-    </>
+    </main>
   );
 }
 
