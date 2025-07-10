@@ -50,17 +50,7 @@ export default function Home() {
   return (
     <>
       <form className="mb-6 flex flex-col gap-4">
-        <div className="filter">
-          <input
-            className="btn btn-square"
-            type="reset"
-            onClick={() => {
-              setSearchCategory("");
-              setSearchTerm("");
-            }}
-            value={"X"}
-          />
-
+        <div className="join">
           {categories.map((item, index) => {
             return (
               <input
@@ -68,7 +58,7 @@ export default function Home() {
                 type="radio"
                 name="radio"
                 value={item.name}
-                className="btn"
+                className="join-item btn"
                 aria-label={item.label}
                 onChange={(e) => setSearchCategory(e.target.value)}
               />
