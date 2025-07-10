@@ -2,29 +2,6 @@ import axios from 'axios';
 
 const SWAPI_BASE = 'https://swapi.info/api';
 
-//const categories = ['films', 'people', 'planets', 'species', 'vehicles', 'starships'];
-
-//export const searchSwapi = async (query: string) => {
-//  const results: { [category: string]: any[] } = {};
-//
-//  // pour chaque categorie on regarde si on a des données pour la query
-//  // si oui on ajoute le tableau de données dans le tableau results à sa categorie associé
-//  // si non, on ajoute un tableau vide à sa categorie associé
-//  await Promise.all(
-//    categories.map(async (category) => {
-//      try {
-//        const res = await axios.get(`${SWAPI_BASE}/${category}/?search=${query}`);
-//        results[category] = res.data || [];
-//      } catch (error) {
-//        results[category] = []; // On continue même si une catégorie échoue
-//        console.warn(`SWAPI error in ${category}:`, error);
-//      }
-//    })
-//  );
-//
-//  return results;
-//};
-
 export const searchSwapi = async (category: string, text: string) => {
   const categoryInfos = await getCategory(category)
 
@@ -71,6 +48,30 @@ export const getInfoElement = async (query: { name: string, id: string }) => {
 
   try {
     const res = await axios.get(`${SWAPI_BASE}/${query.name}/${query.id}`);
+    result = res.data || null;
+  } catch (error) {
+    result = null;
+    console.warn(`SWAPI error in ${query}:`, error);
+  }
+
+  const splitUrl = result.url.split('/');
+  const category = splitUrl[splitUrl.length - 2];
+  const id = splitUrl[splitUrl.length - 1];
+
+  const newResult = {...result, category: category, id: id}
+
+  return newResult;
+};
+
+export const getInfoByUrl = async (query: string) => {
+  let result = null;
+
+  const splitQuery = query.split('/');
+  const categoryQuery = splitQuery[splitQuery.length - 2];
+  const idQuery = splitQuery[splitQuery.length - 1];
+
+  try {
+    const res = await axios.get(`${SWAPI_BASE}/${categoryQuery}/${idQuery}`);
     result = res.data || null;
   } catch (error) {
     result = null;
