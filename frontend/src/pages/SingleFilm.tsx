@@ -1,82 +1,41 @@
 import { useNavigate, useParams } from "react-router";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
-import { useEffect, useState } from "react";
 import { MoveRight } from "lucide-react";
 import { Loader } from "../components/loader";
 import type { Character, Film, Planet, Starships, Vehicle } from "../types";
+import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
 
 export default function SingleFilm() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [formattedDate, setFormattedDate] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [characters, setCharacters] = useState<Character[] | null>(null);
-  const [planets, setPlanets] = useState<Planet[] | null>(null);
-  const [starships, setStarships] = useState<Starships[] | null>(null);
-  const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
 
   const { data, isLoading, isError } = useFetchSingleElement<Film>(
     "films",
     id as string
   );
 
-  async function fetchFromUrls<T>(urls: string[]): Promise<T[]> {
-    const results = await Promise.all(
-      urls.map(async (url) => {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/search/url?q=${url}`
-        );
-        if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
-        const json = await res.json();
-        return json;
-      })
-    );
+  const { data: characters, isLoading: loadingCharacters } =
+    useFetchElementsFromUrls<Character>(data?.characters ?? []);
 
-    return results;
-  }
+  const { data: planets, isLoading: loadingPlanets } =
+    useFetchElementsFromUrls<Planet>(data?.planets ?? []);
 
-  useEffect(() => {
-    if (!data) return;
+  const { data: starships, isLoading: loadingStarships } =
+    useFetchElementsFromUrls<Starships>(data?.starships ?? []);
 
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        if (data.characters?.length > 0) {
-          const characters = await fetchFromUrls<Character>(data.characters);
-          setCharacters(characters);
-        }
-        if (data.planets?.length > 0) {
-          const planets = await fetchFromUrls<Planet>(data.planets);
-          setPlanets(planets);
-        }
-        if (data.starships?.length > 0) {
-          const starships = await fetchFromUrls<Starships>(data.starships);
-          setStarships(starships);
-        }
-        if (data.vehicles?.length > 0) {
-          const vehicles = await fetchFromUrls<Vehicle>(data.vehicles);
-          setVehicles(vehicles);
-        }
+  const { data: vehicles, isLoading: loadingVehicles } =
+    useFetchElementsFromUrls<Vehicle>(data?.vehicles ?? []);
 
-        setLoading(false);
+  const loading =
+    loadingCharacters || loadingPlanets || loadingStarships || loadingVehicles;
 
-        if (data.release_date) {
-          setFormattedDate(
-            new Intl.DateTimeFormat("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(new Date(data.release_date))
-          );
-        }
-      } catch (err) {
-        console.error("Failed to fetch film data", err);
-      }
-    };
-
-    fetchAll();
-  }, [data]);
+  const formattedDate = data?.release_date
+    ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(new Date(data.release_date))
+    : null;
 
   if (isLoading) {
     return <Loader />;
