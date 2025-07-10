@@ -3,14 +3,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MoveRight } from "lucide-react";
 import { NavLink } from "react-router";
 import { useFetchSearch } from "../hooks/useFetchSearch";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Home() {
   const [searchCategory, setSearchCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   const queryClient = useQueryClient();
 
-  const { data, refetch } = useFetchSearch(searchTerm, searchCategory);
+  const { data, refetch } = useFetchSearch(debouncedSearchTerm, searchCategory);
 
   const categories = [
     {
@@ -40,12 +43,12 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    if (searchTerm !== "" && searchCategory !== "") {
+    if (debouncedSearchTerm !== "" && searchCategory !== "") {
       refetch();
     } else {
       queryClient.removeQueries({ queryKey: ["searchUser"] });
     }
-  }, [searchCategory, searchTerm, refetch]);
+  }, [searchCategory, debouncedSearchTerm, refetch]);
 
   return (
     <>
@@ -76,23 +79,33 @@ export default function Home() {
       {data ? (
         data.length > 0 ? (
           <ul className="list bg-base-100 rounded-box shadow-md">
-            {data.map((el: any, index: number) => {
-              return (
-                <li
-                  key={index}
-                  className="list-row flex items-center flex-wrap justify-between"
-                >
-                  <div>
-                    <h2> {searchCategory === "films" ? el.title : el.name}</h2>
-                  </div>
-                  <NavLink to={`${el.category}/${el.id}`}>
-                    <button className="btn btn-square btn-ghost">
-                      <MoveRight />
-                    </button>
-                  </NavLink>
-                </li>
-              );
-            })}
+            {data.map(
+              (
+                el: {
+                  title: string;
+                  name: string;
+                  category: string;
+                  id: string;
+                },
+                index: number
+              ) => {
+                return (
+                  <li
+                    key={index}
+                    className="list-row flex items-center flex-wrap justify-between"
+                  >
+                    <div>
+                      <h2>{searchCategory === "films" ? el.title : el.name}</h2>
+                    </div>
+                    <NavLink to={`${el.category}/${el.id}`}>
+                      <button className="btn btn-square btn-ghost">
+                        <MoveRight />
+                      </button>
+                    </NavLink>
+                  </li>
+                );
+              }
+            )}
           </ul>
         ) : (
           data && data.length === 0 && searchTerm !== "" && <p>No results</p>

@@ -3,6 +3,7 @@ import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import { useEffect, useState } from "react";
 import { MoveRight } from "lucide-react";
 import { Loader } from "../components/loader";
+import type { Character, Film, Planet, Starships, Vehicle } from "../types";
 
 export default function SingleFilm() {
   const { id } = useParams();
@@ -10,27 +11,17 @@ export default function SingleFilm() {
 
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [characters, setCharacters] = useState<
-    { name: string; category: string; id: string }[] | null
-  >(null);
-  const [planets, setPlanets] = useState<
-    { name: string; category: string; id: string }[] | null
-  >(null);
-  const [starships, setStarships] = useState<
-    { name: string; category: string; id: string }[] | null
-  >(null);
-  const [vehicles, setVehicles] = useState<
-    { name: string; category: string; id: string }[] | null
-  >(null);
+  const [characters, setCharacters] = useState<Character[] | null>(null);
+  const [planets, setPlanets] = useState<Planet[] | null>(null);
+  const [starships, setStarships] = useState<Starships[] | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[] | null>(null);
 
-  const { data, isLoading, isError } = useFetchSingleElement(
+  const { data, isLoading, isError } = useFetchSingleElement<Film>(
     "films",
     id as string
   );
 
-  const fetchFromUrls = async (
-    urls: string[]
-  ): Promise<{ name: string; category: string; id: string }[]> => {
+  async function fetchFromUrls<T>(urls: string[]): Promise<T[]> {
     const results = await Promise.all(
       urls.map(async (url) => {
         const res = await fetch(
@@ -43,7 +34,7 @@ export default function SingleFilm() {
     );
 
     return results;
-  };
+  }
 
   useEffect(() => {
     if (!data) return;
@@ -51,19 +42,21 @@ export default function SingleFilm() {
     const fetchAll = async () => {
       try {
         setLoading(true);
-        const sets = [
-          { key: "characters", setter: setCharacters },
-          { key: "planets", setter: setPlanets },
-          { key: "starships", setter: setStarships },
-          { key: "vehicles", setter: setVehicles },
-        ];
-
-        for (const { key, setter } of sets) {
-          const urls = data[key as keyof typeof data] as string[];
-          if (urls?.length > 0) {
-            const results = await fetchFromUrls(urls);
-            setter(results);
-          }
+        if (data.characters?.length > 0) {
+          const characters = await fetchFromUrls<Character>(data.characters);
+          setCharacters(characters);
+        }
+        if (data.planets?.length > 0) {
+          const planets = await fetchFromUrls<Planet>(data.planets);
+          setPlanets(planets);
+        }
+        if (data.starships?.length > 0) {
+          const starships = await fetchFromUrls<Starships>(data.starships);
+          setStarships(starships);
+        }
+        if (data.vehicles?.length > 0) {
+          const vehicles = await fetchFromUrls<Vehicle>(data.vehicles);
+          setVehicles(vehicles);
         }
 
         setLoading(false);
@@ -98,26 +91,32 @@ export default function SingleFilm() {
       <h2 className="text-xl font-bold">{data.title}</h2>
       <p>{data.opening_crawl}</p>
       <div className="stats stats-vertical shadow w-full">
-        <div className="stat">
-          <div className="stat-title">Director</div>
-          <div className="stat-value font-medium text-base">
-            {data.director}
+        {data.director && (
+          <div className="stat">
+            <div className="stat-title">Director</div>
+            <div className="stat-value font-medium text-base">
+              {data.director}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="stat">
-          <div className="stat-title">Producer</div>
-          <div className="stat-value font-medium text-base">
-            {data.producer}
+        {data.producer && (
+          <div className="stat">
+            <div className="stat-title">Producer</div>
+            <div className="stat-value font-medium text-base">
+              {data.producer}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="stat">
-          <div className="stat-title">Release date</div>
-          <div className="stat-value font-medium text-base">
-            {formattedDate}
+        {formattedDate && (
+          <div className="stat">
+            <div className="stat-title">Release date</div>
+            <div className="stat-value font-medium text-base">
+              {formattedDate}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {loading ? (

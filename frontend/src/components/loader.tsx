@@ -1,3 +1,3 @@
 export function Loader() {
-  return <span className="loading loading-spinner loading-xl"></span>;
+  return <span className="loading loading-spinner loading-lg"></span>;
 }

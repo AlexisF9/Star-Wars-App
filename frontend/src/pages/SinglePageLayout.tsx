@@ -6,7 +6,7 @@ export default function SinglePageLayout() {
     <>
       <NavLink to={"/"}>
         <p className="flex items-center gap-2 mb-12">
-          <MoveLeft width={20} /> Back to search
+          <MoveLeft width={20} /> Back to home
         </p>
       </NavLink>
       <Outlet />

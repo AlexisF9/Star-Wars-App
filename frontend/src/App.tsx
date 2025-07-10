@@ -26,6 +26,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+
           <Route element={<SinglePageLayout />}>
             {Object.entries(categoriesRoutes).map(([category, Component]) => (
               <Route
