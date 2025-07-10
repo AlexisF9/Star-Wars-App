@@ -3,7 +3,7 @@ import axios from 'axios';
 const SWAPI_BASE = 'https://swapi.info/api';
 
 export const searchSwapi = async (category: string, text: string) => {
-  const categoryInfos = await getCategory(category)
+  const categoryInfos = await getAllElementsOfCategory(category)
 
   if (!category) {
     return []
@@ -29,7 +29,7 @@ export const searchSwapi = async (category: string, text: string) => {
   return newResults
 }
 
-export const getCategory = async (query: string) => {
+export const getAllElementsOfCategory = async (query: string) => {
   let result = null;
 
   try {
@@ -63,7 +63,7 @@ export const getInfoElement = async (query: { name: string, id: string }) => {
   return newResult;
 };
 
-export const getInfoByUrl = async (query: string) => {
+export const getInfoElementByUrl = async (query: string) => {
   let result = null;
 
   const splitQuery = query.split('/');

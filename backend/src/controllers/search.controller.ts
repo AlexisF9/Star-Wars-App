@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getInfoByUrl, searchSwapi } from '../services/swapi.service';
+import { getInfoElementByUrl, searchSwapi } from '../services/swapi.service';
 
 export const searchHandler = async (req: Request, res: Response) => {
   // requête entrante
@@ -30,7 +30,7 @@ export const searchUrlHandler = async (req: Request, res: Response) => {
   }
 
   try {
-    const results = await getInfoByUrl(url)
+    const results = await getInfoElementByUrl(url)
     res.status(200).json(results);
   } catch (error) {
     console.error('Search error:', error);
