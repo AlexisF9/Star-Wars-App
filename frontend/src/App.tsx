@@ -24,7 +24,7 @@ function App() {
   const { data, refetch } = useQuery({
     queryKey: ["searchUser", searchTerm],
     queryFn: () => fetchSearch(searchCategory, searchTerm),
-    enabled: false, // Ne lance pas automatiquement
+    enabled: false, // Ne lance pas le fetch automatiquement
   });
 
   const categories = [
@@ -62,8 +62,6 @@ function App() {
     }
   }, [searchCategory, searchTerm, refetch]);
 
-  console.log(data);
-
   return (
     <main className="max-w-4xl mx-auto px-2 pb-6">
       <h1 className="bold text-2xl my-12">
@@ -79,7 +77,7 @@ function App() {
               setSearchCategory("");
               setSearchTerm("");
             }}
-            value={"x"}
+            value={"X"}
           />
 
           {categories.map((item, index) => {

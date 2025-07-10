@@ -32,13 +32,28 @@ export const searchSwapi = async (category: string, text: string) => {
     return []
   }
 
-  return categoryInfos.filter((item: any) =>
+  // Je filtre par title ou par name pour récupérer les éléments correspondant à ma recherche
+  const result = categoryInfos.filter((item: {name: string, title:string}) =>
     (category === 'films' ? item.title : item.name).toLowerCase().includes(text.toLowerCase())
   )
+
+  const newResults = result.map((item: {url: string}) => {
+    // Je split l'url en tableau de string 
+    const splitUrl = item.url.split('/');
+
+    // Je récupère la catégorie et l'id de l'url (les deux derniers éléments)
+    const category = splitUrl[splitUrl.length - 2];
+    const id = splitUrl[splitUrl.length - 1];
+
+    // j'injecte la categorie et l'id dans l'objet
+    return {...item, category: category, id: id};
+  });
+  
+  return newResults
 }
 
 export const getCategory = async (query: string) => {
-  let result: any = null;
+  let result = null;
 
   try {
     const res = await axios.get(`${SWAPI_BASE}/${query}`);
@@ -52,7 +67,7 @@ export const getCategory = async (query: string) => {
 };
 
 export const getInfoElement = async (query: { name: string, id: string }) => {
-  let result: any = null;
+  let result = null;
 
   try {
     const res = await axios.get(`${SWAPI_BASE}/${query.name}/${query.id}`);
