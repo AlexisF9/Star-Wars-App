@@ -1,7 +1,7 @@
-import { useParams } from "react-router";
-import NotFound from "./NotFound";
+import { NavLink, useParams } from "react-router";
 import { People } from "../components/people";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
+import { MoveLeft } from "lucide-react";
 
 export default function SingleElement() {
   const { category, id } = useParams();
@@ -15,13 +15,27 @@ export default function SingleElement() {
   ];
 
   if (!category || !id || !validCategories.includes(category)) {
-    return <NotFound />;
+    return (
+      <>
+        <p className="mb-4">Your url is invalid</p>
+        <NavLink to={"/"}>
+          <button className="btn">Back to home</button>
+        </NavLink>
+      </>
+    );
   }
 
   const { data, isLoading, isError } = useFetchSingleElement(category, id);
 
   if (!isLoading && isError) {
-    return <NotFound />;
+    return (
+      <>
+        <p className="mb-4">An error occurred during data loading</p>
+        <NavLink to={"/"}>
+          <button className="btn">Back to home</button>
+        </NavLink>
+      </>
+    );
   }
 
   const categories = [
@@ -31,9 +45,18 @@ export default function SingleElement() {
     },
   ];
 
-  return isLoading ? (
-    <p>Loading...</p>
-  ) : (
-    categories.find((cat) => cat.name === data.category)?.component
+  return (
+    <>
+      <NavLink to={"/"}>
+        <p className="flex items-center gap-2 mb-12">
+          <MoveLeft width={20} /> Back to search
+        </p>
+      </NavLink>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        categories.find((cat) => cat.name === data.category)?.component
+      )}
+    </>
   );
 }
