@@ -1,19 +1,8 @@
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { MoveRight } from "lucide-react";
 import { NavLink } from "react-router";
-
-const fetchSearch = async (cat: string, text: string) => {
-  const url = `http://localhost:3000/api/search?cat=${cat}&q=${text}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const json = await response.json();
-  return json;
-};
+import { useFetchSearch } from "../hooks/useFetchSearch";
 
 export default function Home() {
   const [searchCategory, setSearchCategory] = useState("");
@@ -21,11 +10,7 @@ export default function Home() {
 
   const queryClient = useQueryClient();
 
-  const { data, refetch } = useQuery({
-    queryKey: ["searchUser", searchTerm],
-    queryFn: () => fetchSearch(searchCategory, searchTerm),
-    enabled: false, // Ne lance pas le fetch automatiquement
-  });
+  const { data, refetch } = useFetchSearch(searchTerm, searchCategory);
 
   const categories = [
     {

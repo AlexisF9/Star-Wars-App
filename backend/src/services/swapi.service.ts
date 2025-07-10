@@ -77,5 +77,11 @@ export const getInfoElement = async (query: { name: string, id: string }) => {
     console.warn(`SWAPI error in ${query}:`, error);
   }
 
-  return result;
+  const splitUrl = result.url.split('/');
+  const category = splitUrl[splitUrl.length - 2];
+  const id = splitUrl[splitUrl.length - 1];
+
+  const newResult = {...result, category: category, id: id}
+
+  return newResult;
 };
