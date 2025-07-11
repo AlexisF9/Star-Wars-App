@@ -4,12 +4,13 @@ import { MoveRight } from "lucide-react";
 import { Loader } from "../components/loader";
 import type { Character, Film, Planet, Starships, Vehicle } from "../types";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
+import { Error } from "../components/error";
 
 export default function SingleFilm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useFetchSingleElement<Film>(
+  const { data, isLoading, isError, error } = useFetchSingleElement<Film>(
     "films",
     id as string
   );
@@ -42,7 +43,7 @@ export default function SingleFilm() {
   }
 
   if (isError || !data) {
-    return <p>Error</p>;
+    return <Error status={error} />;
   }
 
   return (

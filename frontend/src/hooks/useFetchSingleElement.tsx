@@ -6,7 +6,7 @@ export function useFetchSingleElement<T>(category: string, id: string) {
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`Error : ${response.status}`);
     }
 
     const json = await response.json();

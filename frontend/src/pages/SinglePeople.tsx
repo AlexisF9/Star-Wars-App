@@ -2,11 +2,12 @@ import { useParams } from "react-router";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import { Loader } from "../components/loader";
 import type { Character } from "../types";
+import { Error } from "../components/error";
 
 export default function SinglePeople() {
   const { id } = useParams();
 
-  const { data, isLoading, isError } = useFetchSingleElement<Character>(
+  const { data, isLoading, isError, error } = useFetchSingleElement<Character>(
     "people",
     id as string
   );
@@ -16,7 +17,7 @@ export default function SinglePeople() {
   }
 
   if (isError || !data) {
-    return <p>Error</p>;
+    return <Error status={error} />;
   }
 
   return (
