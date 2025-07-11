@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const SWAPI_BASE = 'https://swapi.info/api';
-
 export const searchSwapi = async (category: string, text: string) => {
   const categoryInfos = await getAllElementsOfCategory(category)
 
@@ -33,7 +31,7 @@ export const getAllElementsOfCategory = async (query: string) => {
   let result = null;
 
   try {
-    const res = await axios.get(`${SWAPI_BASE}/${query}`);
+    const res = await axios.get(`${process.env.SWAPI_BASE_URL}/${query}`);
     result = res.data || null;
   } catch (error) {
     result = null;
@@ -47,7 +45,7 @@ export const getInfoElement = async (query: { name: string, id: string }) => {
   let result = null;
 
   try {
-    const res = await axios.get(`${SWAPI_BASE}/${query.name}/${query.id}`);
+    const res = await axios.get(`${process.env.SWAPI_BASE_URL}/${query.name}/${query.id}`);
     result = res.data || null;
   } catch (error) {
     result = null;
@@ -66,12 +64,8 @@ export const getInfoElement = async (query: { name: string, id: string }) => {
 export const getInfoElementByUrl = async (query: string) => {
   let result = null;
 
-  const splitQuery = query.split('/');
-  const categoryQuery = splitQuery[splitQuery.length - 2];
-  const idQuery = splitQuery[splitQuery.length - 1];
-
   try {
-    const res = await axios.get(`${SWAPI_BASE}/${categoryQuery}/${idQuery}`);
+    const res = await axios.get(query);
     result = res.data || null;
   } catch (error) {
     result = null;
