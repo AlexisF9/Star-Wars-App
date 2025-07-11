@@ -9,6 +9,13 @@ Installation :
 ```
 npm i
 ```
+Ajouter un fichier .env à la racine :
+
+```
+VITE_API_URL=http://localhost:3000/api
+```
+Lancer le front :
+
 ```
 npm run dev
 ```
@@ -17,10 +24,14 @@ npm run dev
 ### Backend
 
 Installation :
-
 ```
 npm i
 ```
+Ajouter un fichier .env à la racine:
+```
+SWAPI_BASE_URL=https://swapi.info/api
+```
+Lancer le back :
 ```
 npm run dev
 ```
