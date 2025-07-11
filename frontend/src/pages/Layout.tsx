@@ -1,11 +1,19 @@
 import { Outlet } from "react-router";
 import { Header } from "../components/header";
+import { Footer } from "../components/footer";
 
 export default function Layout() {
   return (
-    <main className="max-w-4xl mx-auto px-2 pb-6">
+    <main className="min-h-screen flex flex-col">
       <Header />
-      <Outlet />
+
+      <div className="flex-1">
+        <div className="max-w-5xl mx-auto px-4">
+          <Outlet />
+        </div>
+      </div>
+
+      <Footer />
     </main>
   );
 }

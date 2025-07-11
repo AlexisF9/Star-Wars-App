@@ -7,7 +7,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
 
 export default function Home() {
-  const [searchCategory, setSearchCategory] = useState("");
+  const [searchCategory, setSearchCategory] = useState("films");
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -60,22 +60,22 @@ export default function Home() {
 
   return (
     <>
-      <form className="mb-6 flex flex-col gap-4">
-        <div className="join w-full">
-          {categories.map((item, index) => {
-            return (
-              <input
-                key={index}
-                type="radio"
-                name="radio"
-                value={item.name}
-                className="join-item flex-1 btn"
-                aria-label={item.label}
-                onChange={(e) => setSearchCategory(e.target.value)}
-              />
-            );
-          })}
-        </div>
+      <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
+      <form className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2">
+        <select
+          defaultValue="films"
+          className="select w-full md:w-fit"
+          onChange={(e) => setSearchCategory(e.target.value)}
+        >
+          {categories?.length > 0 &&
+            categories.map((item, index) => {
+              return (
+                <option key={index} value={item.name}>
+                  {item.label}
+                </option>
+              );
+            })}
+        </select>
         <label className="input w-full">
           <Search width={20} />
           <input
@@ -92,7 +92,7 @@ export default function Home() {
           <Loader />
         </div>
       ) : data ? (
-        data.length > 0 ? (
+        data?.length > 0 ? (
           <ul className="list bg-base-100 rounded-box shadow-md">
             {data.map(
               (
