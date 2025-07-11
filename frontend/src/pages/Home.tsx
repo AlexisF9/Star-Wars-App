@@ -123,7 +123,9 @@ export default function Home() {
             )}
           </ul>
         ) : (
-          data && data.length === 0 && searchTerm !== "" && <p>No results</p>
+          data &&
+          data.length === 0 &&
+          searchTerm !== "" && <p>No results found for your search.</p>
         )
       ) : null}
     </>

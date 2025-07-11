@@ -9,7 +9,7 @@ export interface Film {
     starships: string[],
     vehicles: string[],
     url: string,
-    category: string,
+    category: 'films',
     id: string
 }
 
@@ -23,7 +23,7 @@ export interface Character {
     vehicles: string[],
     starships: string[],
     url: string,
-    category: string,
+    category: 'people',
     id: string
 }
 
@@ -40,7 +40,7 @@ export interface Planet {
     residents: string[],
     films: string[],
     url: string,
-    category: string,
+    category: 'planets',
     id: string
 }
 
@@ -52,7 +52,7 @@ export interface Species {
     people: string[],
     films: string[],
     url: string,
-    category: string,
+    category: 'species',
     id: string
 }
 
@@ -70,15 +70,16 @@ interface GlobalVehicle {
     pilots: string[],
     films: string[],
     url: string,
-    category: string,
     id: string
 }
 
 export interface Vehicle extends GlobalVehicle {
     vehicle_class: string,
+    category: 'vehicles',
 }
 
 export interface Starships extends GlobalVehicle {
     hyperdrive_rating: string,
     starship_class: string,
+    category: 'starships',
 }
