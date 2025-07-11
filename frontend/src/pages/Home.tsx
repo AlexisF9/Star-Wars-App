@@ -7,14 +7,14 @@ import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
 
 export default function Home() {
-  const [searchCategory, setSearchCategory] = useState("films");
+  const [searchCategory, setSearchCategory] = useState("fil");
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading, refetch } = useFetchSearch(
+  const { data, isLoading, refetch, isError, error } = useFetchSearch(
     debouncedSearchTerm,
     searchCategory
   );
@@ -22,7 +22,7 @@ export default function Home() {
   const categories = [
     {
       label: "Films",
-      name: "films",
+      name: "fil",
     },
     {
       label: "People",
@@ -47,14 +47,13 @@ export default function Home() {
   ];
 
   useEffect(() => {
+    queryClient.removeQueries({ queryKey: ["searchUser"] });
     if (
       debouncedSearchTerm !== "" &&
       /[a-zA-Z]/.test(debouncedSearchTerm) &&
       searchCategory !== ""
     ) {
       refetch();
-    } else {
-      queryClient.removeQueries({ queryKey: ["searchUser"] });
     }
   }, [searchCategory, debouncedSearchTerm, refetch]);
 
@@ -128,6 +127,7 @@ export default function Home() {
           searchTerm !== "" && <p>No results found for your search.</p>
         )
       ) : null}
+      {isError && <p>{error.message}</p>}
     </>
   );
 }

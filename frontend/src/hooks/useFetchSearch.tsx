@@ -6,7 +6,7 @@ export function useFetchSearch(searchTerm: string, searchCategory: string) {
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`Something went wrong. Error status: ${response.status}`);
     }
 
     const json = await response.json();
