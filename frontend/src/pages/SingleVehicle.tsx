@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Vehicle } from "../types";
 import { Error } from "../components/error";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MoveRight, Search } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 import { useFetchSearch } from "../hooks/useFetchSearch";
 import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";

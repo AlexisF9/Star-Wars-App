@@ -7,7 +7,7 @@ import type {
   Starships,
   Vehicle,
 } from "../types";
-import { useNavigate } from "react-router";
+import { NavLink } from "react-router-dom";
 
 export function Tab({
   elements,
@@ -18,8 +18,6 @@ export function Tab({
   label: string;
   defaultChecked?: boolean;
 }) {
-  const navigate = useNavigate();
-
   return (
     <>
       <input
@@ -45,14 +43,11 @@ export function Tab({
                         : element.name}
                     </div>
                   </div>
-                  <button
-                    className="btn btn-square btn-ghost"
-                    onClick={() =>
-                      navigate(`/${element.category}/${element.id}`)
-                    }
-                  >
-                    <MoveRight />
-                  </button>
+                  <NavLink to={`/${element.category}/${element.id}`}>
+                    <button className="btn btn-square btn-ghost">
+                      <MoveRight />
+                    </button>
+                  </NavLink>
                 </li>
               );
             })}

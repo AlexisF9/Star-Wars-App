@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { NavLink, useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type {
   Character,
@@ -17,7 +17,6 @@ import { TabsLoader } from "../components/tabsLoader";
 
 export default function SinglePeople() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const { data, isLoading, isError, error } = useFetchSingleElement<Character>(
     "people",
@@ -92,14 +91,11 @@ export default function SinglePeople() {
               <span>
                 <span>{homeworld.name}</span>
               </span>
-              <button
-                className="btn btn-square btn-ghost"
-                onClick={() =>
-                  navigate(`/${homeworld.category}/${homeworld.id}`)
-                }
-              >
-                <MoveRight />
-              </button>
+              <NavLink to={`/${homeworld.category}/${homeworld.id}`}>
+                <button className="btn btn-square btn-ghost">
+                  <MoveRight />
+                </button>
+              </NavLink>
             </p>
           </div>
         </div>

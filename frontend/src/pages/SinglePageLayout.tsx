@@ -1,5 +1,5 @@
 import { MoveLeft } from "lucide-react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router-dom";
 
 export default function SinglePageLayout() {
   return (

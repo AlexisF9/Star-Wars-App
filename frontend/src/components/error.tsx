@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 
 export function Error({ status }: { status: Error | null }) {
   return (
