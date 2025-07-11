@@ -7,22 +7,10 @@ import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
 
 export default function Home() {
-  const [searchCategory, setSearchCategory] = useState("fil");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  const queryClient = useQueryClient();
-
-  const { data, isLoading, refetch, isError, error } = useFetchSearch(
-    debouncedSearchTerm,
-    searchCategory
-  );
-
   const categories = [
     {
       label: "Films",
-      name: "fil",
+      name: "films",
     },
     {
       label: "People",
@@ -45,6 +33,18 @@ export default function Home() {
       name: "starships",
     },
   ];
+
+  const [searchCategory, setSearchCategory] = useState(categories[0].name);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, refetch, isError, error } = useFetchSearch(
+    debouncedSearchTerm,
+    searchCategory
+  );
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["searchUser"] });
