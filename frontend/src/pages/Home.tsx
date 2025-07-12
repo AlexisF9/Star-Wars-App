@@ -9,6 +9,10 @@ import { Loader } from "../components/loader";
 export default function Home() {
   const categories = [
     {
+      label: "All",
+      name: "all",
+    },
+    {
       label: "Films",
       name: "films",
     },
@@ -62,7 +66,7 @@ export default function Home() {
       <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
       <form className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2">
         <select
-          defaultValue="films"
+          defaultValue={categories[0].name}
           className="select w-full md:w-fit"
           onChange={(e) => setSearchCategory(e.target.value)}
         >
@@ -109,7 +113,18 @@ export default function Home() {
                     className="list-row flex items-center flex-wrap justify-between"
                   >
                     <div>
-                      <h2>{searchCategory === "films" ? el.title : el.name}</h2>
+                      <h2>
+                        {searchCategory === "all"
+                          ? el.title ?? el.name
+                          : searchCategory === "films"
+                          ? el.title
+                          : el.name}
+                      </h2>
+                      {searchCategory === "all" && (
+                        <div className="text-xs uppercase opacity-50">
+                          {el.category}
+                        </div>
+                      )}
                     </div>
                     <NavLink to={`${el.category}/${el.id}`}>
                       <button className="btn btn-square btn-ghost">

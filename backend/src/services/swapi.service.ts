@@ -1,5 +1,53 @@
 import axios from 'axios';
 
+export const searchInAll = async (query: string) => {
+  const test = await getAllCategories();
+  
+  let results: any[] = [];
+
+  await Promise.all(
+    Object.entries(test).map(async ([category, url]) => {
+      try {
+          const res = await axios.get(`${url}`);
+          const datas = res.data;
+          const editDatas = datas.map((item: {url: string}) => {
+            // Je split l'url en tableau de string 
+            const splitUrl = item.url.split('/');
+
+            // Je récupère la catégorie et l'id de l'url (les deux derniers éléments)
+            const category = splitUrl[splitUrl.length - 2];
+            const id = splitUrl[splitUrl.length - 1];
+
+            // j'injecte la categorie et l'id dans l'objet
+            return {...item, category: category, id: id};
+          })
+
+          results.push(...editDatas);
+        } catch (error) {
+          console.warn(`Erreur dans la catégorie ${category}:`, error);
+        }
+      })
+  );
+
+  const filteredResults: any[] = results.filter((item) => (item.title ? item.title : item.name).toLowerCase().includes(query.toLowerCase()));
+
+  return filteredResults;
+};
+
+export const getAllCategories = async () => {
+  let result = null;
+
+  try {
+    const res = await axios.get(`${process.env.SWAPI_BASE_URL}`);
+    result = res.data || null;
+  } catch (error) {
+    result = null;
+    console.warn(`SWAPI error :`, error);
+  }
+
+  return result;
+}
+
 export const searchSwapi = async (category: string, text: string) => {
   const categoryInfos = await getAllElementsOfCategory(category)
 
@@ -13,14 +61,11 @@ export const searchSwapi = async (category: string, text: string) => {
   )
 
   const newResults = result.map((item: {url: string}) => {
-    // Je split l'url en tableau de string 
     const splitUrl = item.url.split('/');
 
-    // Je récupère la catégorie et l'id de l'url (les deux derniers éléments)
     const category = splitUrl[splitUrl.length - 2];
     const id = splitUrl[splitUrl.length - 1];
 
-    // j'injecte la categorie et l'id dans l'objet
     return {...item, category: category, id: id};
   });
   

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getInfoElementByUrl, searchSwapi } from '../services/swapi.service';
+import { getInfoElementByUrl, searchInAll, searchSwapi } from '../services/swapi.service';
 
 export const searchHandler = async (req: Request, res: Response) => {
   // requête entrante
@@ -11,11 +11,17 @@ export const searchHandler = async (req: Request, res: Response) => {
   }
 
   try {
-    // appel le service searchSwapi qui contient la logique d'appel à l'API SWAPI
-    const results = await searchSwapi(category, text)
+    if (category === "all") {
+      // appel le service searchSwapi qui contient la logique d'appel à l'API SWAPI
+      const results = await searchInAll(text)
 
-    // réponse du service au format json
-    res.status(200).json(results);
+      // réponse du service au format json
+      res.status(200).json(results);
+    } else {
+      const results = await searchSwapi(category, text)
+      res.status(200).json(results);
+    }
+    
   } catch (error) {
     console.error('Search error:', error);
     res.status(500).json({ error: 'Internal server error' });
