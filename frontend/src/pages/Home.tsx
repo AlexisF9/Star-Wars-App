@@ -6,40 +6,20 @@ import { useFetchSearch } from "../hooks/useFetchSearch";
 import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
 import { useFetchAllCategories } from "../hooks/useFetchAllCategories";
+import { categories } from "../App";
 
 export default function Home() {
-  const categories = [
+  const selectCategories = [
     {
       label: "All",
       name: "all",
     },
-    {
-      label: "Films",
-      name: "films",
-    },
-    {
-      label: "People",
-      name: "people",
-    },
-    {
-      label: "Planets",
-      name: "planets",
-    },
-    {
-      label: "Species",
-      name: "species",
-    },
-    {
-      label: "Vehicles",
-      name: "vehicles",
-    },
-    {
-      label: "Starships",
-      name: "starships",
-    },
+    ...categories,
   ];
 
-  const [searchCategory, setSearchCategory] = useState(categories[0].name);
+  const [searchCategory, setSearchCategory] = useState(
+    selectCategories[0].name
+  );
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -70,12 +50,12 @@ export default function Home() {
       <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
       <form className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2">
         <select
-          defaultValue={categories[0].name}
+          defaultValue={selectCategories[0].name}
           className="select w-full md:w-fit"
           onChange={(e) => setSearchCategory(e.target.value)}
         >
-          {categories?.length > 0 &&
-            categories.map((item, index) => {
+          {selectCategories?.length > 0 &&
+            selectCategories.map((item, index) => {
               return (
                 <option key={index} value={item.name}>
                   {item.label}
@@ -168,13 +148,16 @@ export default function Home() {
               {Object.entries(allCategories as Record<string, string>).map(
                 ([category, _], index) => {
                   return (
-                    categories.find((el) => el.name === category) && (
+                    selectCategories.find((el) => el.name === category) && (
                       <li
                         className="list-row flex items-center flex-wrap justify-between"
                         key={index}
                       >
                         <h3>
-                          {categories.find((el) => el.name === category)?.label}
+                          {
+                            selectCategories.find((el) => el.name === category)
+                              ?.label
+                          }
                         </h3>
                         <NavLink to={`/${category}`}>
                           <button className="btn btn-square btn-ghost">

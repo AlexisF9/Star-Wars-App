@@ -84,7 +84,16 @@ export const getAllElementsOfCategory = async (query: string) => {
     throw new Error(`Category ${query} does not exist`)
   }
 
-  return result;
+  const newResults = result.map((item: {url: string}) => {
+    const splitUrl = item.url.split('/');
+
+    const category = splitUrl[splitUrl.length - 2];
+    const id = splitUrl[splitUrl.length - 1];
+
+    return {...item, category: category, id: id};
+  });
+
+  return newResults;
 };
 
 export const getInfoElement = async (query: { name: string, id: string }) => {

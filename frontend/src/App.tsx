@@ -12,6 +12,33 @@ import SingleStarship from "./pages/SingleStarship";
 import SinglePageLayout from "./pages/SinglePageLayout";
 import Category from "./pages/Category";
 
+export const categories = [
+  {
+    label: "Films",
+    name: "films",
+  },
+  {
+    label: "People",
+    name: "people",
+  },
+  {
+    label: "Planets",
+    name: "planets",
+  },
+  {
+    label: "Species",
+    name: "species",
+  },
+  {
+    label: "Vehicles",
+    name: "vehicles",
+  },
+  {
+    label: "Starships",
+    name: "starships",
+  },
+];
+
 function App() {
   const categoriesRoutes = {
     films: SingleFilm,
@@ -28,6 +55,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
 
+          <Route path={`/:category`} element={<Category />} />
+
           <Route element={<SinglePageLayout />}>
             {Object.entries(categoriesRoutes).map(([category, Component]) => (
               <Route
@@ -37,8 +66,6 @@ function App() {
               />
             ))}
           </Route>
-
-          <Route path={`/:category`} element={<Category />} />
         </Route>
         <Route path="/*" element={<NotFound />} />
       </Routes>
