@@ -1,27 +1,20 @@
 import { NavLink, useParams } from "react-router-dom";
 import { useFetchCategory } from "../hooks/useFetchCategory";
 import NotFound from "./NotFound";
-import type {
-  Character,
-  Film,
-  Planet,
-  Species,
-  Starships,
-  Vehicle,
-} from "../types";
+import { allCategoriesType } from "../types";
 import { MoveRight } from "lucide-react";
 import { categories } from "../App";
 
 export default function Category() {
   const params = useParams();
 
-  const isGoodCategory = categories.find((el) => el.name === params.category);
+  const isGoodCategory = Object.values(categories).find(
+    (el) => el.name === params.category
+  );
 
-  const { data, isLoading, isError, error } = useFetchCategory<
-    (Film | Character | Planet | Species | Vehicle | Starships)[]
+  const { data, isLoading, isError } = useFetchCategory<
+    (typeof allCategoriesType)[]
   >(params.category as string);
-
-  console.log(params, data, isError, error);
 
   if (!isGoodCategory || isError) {
     return <NotFound />;

@@ -11,33 +11,23 @@ import SingleVehicle from "./pages/SingleVehicle";
 import SingleStarship from "./pages/SingleStarship";
 import SinglePageLayout from "./pages/SinglePageLayout";
 import Category from "./pages/Category";
+import type {
+  Character,
+  Film,
+  Planet,
+  Species,
+  Starships,
+  Vehicle,
+} from "./types";
 
-export const categories = [
-  {
-    label: "Films",
-    name: "films",
-  },
-  {
-    label: "People",
-    name: "people",
-  },
-  {
-    label: "Planets",
-    name: "planets",
-  },
-  {
-    label: "Species",
-    name: "species",
-  },
-  {
-    label: "Vehicles",
-    name: "vehicles",
-  },
-  {
-    label: "Starships",
-    name: "starships",
-  },
-];
+export const categories = {
+  films: { label: "Films", name: "films", type: {} as Film },
+  people: { label: "People", name: "people", type: {} as Character },
+  planets: { label: "Planets", name: "planets", type: {} as Planet },
+  species: { label: "Species", name: "species", type: {} as Species },
+  vehicles: { label: "Vehicles", name: "vehicles", type: {} as Vehicle },
+  starships: { label: "Starships", name: "starships", type: {} as Starships },
+};
 
 function App() {
   const categoriesRoutes = {

@@ -1,3 +1,11 @@
+export const allCategoriesType = {} as
+  | Film
+  | Character
+  | Planet
+  | Species
+  | Vehicle
+  | Starships;
+
 export interface Film {
     title: string,
     opening_crawl: string,

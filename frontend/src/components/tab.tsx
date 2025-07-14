@@ -1,12 +1,5 @@
 import { MoveRight } from "lucide-react";
-import type {
-  Character,
-  Film,
-  Planet,
-  Species,
-  Starships,
-  Vehicle,
-} from "../types";
+import type { allCategoriesType } from "../types";
 import { NavLink } from "react-router-dom";
 
 export function Tab({
@@ -14,7 +7,7 @@ export function Tab({
   label,
   defaultChecked = false,
 }: {
-  elements: (Film | Character | Planet | Species | Starships | Vehicle)[];
+  elements: (typeof allCategoriesType)[];
   label: string;
   defaultChecked?: boolean;
 }) {

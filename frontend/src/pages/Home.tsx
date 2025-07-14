@@ -14,7 +14,10 @@ export default function Home() {
       label: "All",
       name: "all",
     },
-    ...categories,
+    ...Object.entries(categories).map(([_, value]) => ({
+      label: value.label,
+      name: value.name,
+    })),
   ];
 
   const [searchCategory, setSearchCategory] = useState(
