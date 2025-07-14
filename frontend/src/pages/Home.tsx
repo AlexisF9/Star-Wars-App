@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { useFetchSearch } from "../hooks/useFetchSearch";
 import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
+import { useFetchAllCategories } from "../hooks/useFetchAllCategories";
 
 export default function Home() {
   const categories = [
@@ -49,6 +50,9 @@ export default function Home() {
     debouncedSearchTerm,
     searchCategory
   );
+
+  const { data: allCategories, isLoading: allCategoriesLoading } =
+    useFetchAllCategories();
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["searchUser"] });
@@ -113,13 +117,13 @@ export default function Home() {
                     className="list-row flex items-center flex-wrap justify-between"
                   >
                     <div>
-                      <h2>
+                      <h3>
                         {searchCategory === "all"
                           ? el.title ?? el.name
                           : searchCategory === "films"
                           ? el.title
                           : el.name}
-                      </h2>
+                      </h3>
                       {searchCategory === "all" && (
                         <div className="text-xs uppercase opacity-50">
                           {el.category}
@@ -143,6 +147,49 @@ export default function Home() {
         )
       ) : null}
       {isError && <p>{error.message}</p>}
+
+      {allCategoriesLoading ? (
+        <div className="flex w-full flex-col gap-4">
+          <div className="skeleton h-4 w-32"></div>
+          <div className="flex flex-col gap-2">
+            <div className="skeleton h-18 w-full"></div>
+            <div className="skeleton h-18 w-full"></div>
+            <div className="skeleton h-18 w-full"></div>
+            <div className="skeleton h-18 w-full"></div>
+            <div className="skeleton h-18 w-full"></div>
+            <div className="skeleton h-18 w-full"></div>
+          </div>
+        </div>
+      ) : (
+        allCategories && (
+          <>
+            <h2 className="text-xl font-bold mt-12 mb-4">Visit a category</h2>
+            <ul className="list bg-base-100 rounded-box shadow-md">
+              {Object.entries(allCategories as Record<string, string>).map(
+                ([category, _], index) => {
+                  return (
+                    categories.find((el) => el.name === category) && (
+                      <li
+                        className="list-row flex items-center flex-wrap justify-between"
+                        key={index}
+                      >
+                        <h3>
+                          {categories.find((el) => el.name === category)?.label}
+                        </h3>
+                        <NavLink to={`/${category}`}>
+                          <button className="btn btn-square btn-ghost">
+                            <MoveRight />
+                          </button>
+                        </NavLink>
+                      </li>
+                    )
+                  );
+                }
+              )}
+            </ul>
+          </>
+        )
+      )}
     </>
   );
 }

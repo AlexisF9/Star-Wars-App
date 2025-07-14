@@ -10,6 +10,7 @@ import SingleSpecies from "./pages/SingleSpecies";
 import SingleVehicle from "./pages/SingleVehicle";
 import SingleStarship from "./pages/SingleStarship";
 import SinglePageLayout from "./pages/SinglePageLayout";
+import Category from "./pages/Category";
 
 function App() {
   const categoriesRoutes = {
@@ -36,6 +37,8 @@ function App() {
               />
             ))}
           </Route>
+
+          <Route path={`/:category`} element={<Category />} />
         </Route>
         <Route path="/*" element={<NotFound />} />
       </Routes>

@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useFetchSearch(searchTerm: string, searchCategory: string) {
   const fetchSearch = async (cat: string, text: string) => {
-    const url = `${import.meta.env.VITE_API_URL}/search?cat=${cat}&q=${text}`;
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }/search?category=${cat}&q=${text}`;
     const response = await fetch(url);
 
     if (!response.ok) {

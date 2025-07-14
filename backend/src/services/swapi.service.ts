@@ -24,7 +24,7 @@ export const searchInAll = async (query: string) => {
 
           results.push(...editDatas);
         } catch (error) {
-          console.warn(`Erreur dans la catégorie ${category}:`, error);
+          console.warn(`Error in ${category} category :`, error);
         }
       })
   );
@@ -81,6 +81,7 @@ export const getAllElementsOfCategory = async (query: string) => {
   } catch (error) {
     result = null;
     console.warn(`SWAPI error in ${query}:`, error);
+    throw new Error(`Category ${query} does not exist`)
   }
 
   return result;

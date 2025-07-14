@@ -3,7 +3,7 @@ import { getInfoElementByUrl, searchInAll, searchSwapi } from '../services/swapi
 
 export const searchHandler = async (req: Request, res: Response) => {
   // requête entrante
-  const category = req.query.cat as string;
+  const category = req.query.category as string;
   const text = req.query.q as string;
 
   if (!text) {
