@@ -31,7 +31,7 @@ export const searchInAll = async (query: string) => {
 
   const filteredResults: any[] = results.filter((item) => (item.title ? item.title : item.name).toLowerCase().includes(query.toLowerCase()));
 
-  return filteredResults;
+  return filteredResults.slice(0, 10);
 };
 
 export const getAllCategories = async () => {
@@ -69,7 +69,7 @@ export const searchSwapi = async (category: string, text: string) => {
     return {...item, category: category, id: id};
   });
   
-  return newResults
+  return newResults.slice(0, 10)
 }
 
 export const getAllElementsOfCategory = async (query: string) => {
