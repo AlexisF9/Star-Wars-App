@@ -30,6 +30,8 @@ npm i
 Ajouter un fichier .env à la racine:
 ```
 SWAPI_BASE_URL=https://swapi.info/api
+PORT=3000
+JWT_SECRET=secretkey
 ```
 Lancer le back :
 ```
