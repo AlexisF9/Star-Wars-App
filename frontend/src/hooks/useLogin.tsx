@@ -22,9 +22,9 @@ export function useLogin(username: string, password: string) {
   };
 
   return useQuery({
-    queryKey: ["fetchUser"],
+    queryKey: ["fetchUser", username],
     queryFn: () => login(),
-    retry: false,
     enabled: false,
+    retry: false,
   });
 }
