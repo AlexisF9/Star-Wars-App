@@ -7,6 +7,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { Loader } from "../components/loader";
 import { useFetchAllCategories } from "../hooks/useFetchAllCategories";
 import { categories } from "../App";
+import type { allCategoriesType, Film } from "../types";
 
 export default function Home() {
   const selectCategories = [
@@ -51,6 +52,10 @@ export default function Home() {
     }
   }, [searchCategory, debouncedSearchTerm, refetch]);
 
+  const isFilm = (el: typeof allCategoriesType): el is Film => {
+    return el.category === categories.films.name;
+  };
+
   return (
     <>
       <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
@@ -87,44 +92,28 @@ export default function Home() {
       ) : data ? (
         data?.length > 0 ? (
           <ul className="list bg-base-100 rounded-box shadow-md">
-            {data.map(
-              (
-                el: {
-                  title: string;
-                  name: string;
-                  category: string;
-                  id: string;
-                },
-                index: number
-              ) => {
-                return (
-                  <li
-                    key={index}
-                    className="list-row flex items-center flex-wrap justify-between"
-                  >
-                    <div>
-                      <h3>
-                        {searchCategory === "all"
-                          ? el.title ?? el.name
-                          : searchCategory === "films"
-                          ? el.title
-                          : el.name}
-                      </h3>
-                      {searchCategory === "all" && (
-                        <div className="text-xs uppercase opacity-50">
-                          {el.category}
-                        </div>
-                      )}
-                    </div>
-                    <NavLink to={`${el.category}/${el.id}`}>
-                      <button className="btn btn-square btn-ghost">
-                        <MoveRight />
-                      </button>
-                    </NavLink>
-                  </li>
-                );
-              }
-            )}
+            {data.map((el: typeof allCategoriesType, index: number) => {
+              return (
+                <li
+                  key={index}
+                  className="list-row flex items-center flex-wrap justify-between"
+                >
+                  <div>
+                    <h3>{isFilm(el) ? el.title : el.name}</h3>
+                    {searchCategory === "all" && (
+                      <div className="text-xs uppercase opacity-50">
+                        {el.category}
+                      </div>
+                    )}
+                  </div>
+                  <NavLink to={`${el.category}/${el.id}`}>
+                    <button className="btn btn-square btn-ghost">
+                      <MoveRight />
+                    </button>
+                  </NavLink>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           data &&

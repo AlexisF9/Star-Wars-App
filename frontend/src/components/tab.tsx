@@ -1,6 +1,7 @@
 import { MoveRight } from "lucide-react";
-import type { allCategoriesType } from "../types";
+import type { allCategoriesType, Film } from "../types";
 import { NavLink } from "react-router-dom";
+import { categories } from "../App";
 
 export function Tab({
   elements,
@@ -11,6 +12,10 @@ export function Tab({
   label: string;
   defaultChecked?: boolean;
 }) {
+  const isFilm = (el: typeof allCategoriesType): el is Film => {
+    return el.category === categories.films.name;
+  };
+
   return (
     <>
       <input
@@ -30,11 +35,7 @@ export function Tab({
                   className="list-row flex items-center flex-wrap justify-between"
                 >
                   <div>
-                    <div>
-                      {element.category === "films"
-                        ? element.title
-                        : element.name}
-                    </div>
+                    <div>{isFilm(element) ? element.title : element.name}</div>
                   </div>
                   <NavLink to={`/${element.category}/${element.id}`}>
                     <button className="btn btn-square btn-ghost">
