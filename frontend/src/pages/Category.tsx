@@ -1,23 +1,34 @@
 import { NavLink, useParams } from "react-router-dom";
 import { useFetchCategory } from "../hooks/useFetchCategory";
-import NotFound from "./NotFound";
 import { allCategoriesType } from "../types";
 import { MoveRight } from "lucide-react";
 import { categories } from "../App";
+import NotFound from "./NotFound";
+import { Error } from "../components/error";
 
 export default function Category() {
   const params = useParams();
 
   const isGoodCategory = Object.values(categories).find(
     (el) => el.name === params.category
+  )
+    ? true
+    : false;
+
+  const categoryInfos = Object.values(categories).find(
+    (el) => el.name === params.category
   );
 
-  const { data, isLoading, isError } = useFetchCategory<
+  const { data, isLoading, isError, refetch, error } = useFetchCategory<
     (typeof allCategoriesType)[]
   >(params.category as string);
 
-  if (!isGoodCategory || isError) {
+  if (!isGoodCategory) {
     return <NotFound />;
+  }
+
+  if (!isError) {
+    refetch();
   }
 
   if (isLoading) {
@@ -35,8 +46,8 @@ export default function Category() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">{isGoodCategory.label}</h2>
-      {data && data?.length > 0 && (
+      <h2 className="text-2xl font-bold mb-4">{categoryInfos?.label}</h2>
+      {data && data?.length > 0 ? (
         <ul className="list bg-base-100 rounded-box shadow-md">
           {data.map((element, index) => {
             return (
@@ -54,7 +65,9 @@ export default function Category() {
             );
           })}
         </ul>
-      )}
+      ) : error ? (
+        <Error message={error.message} />
+      ) : null}
     </div>
   );
 }

@@ -34,8 +34,11 @@ export default function Home() {
     searchCategory
   );
 
-  const { data: allCategories, isLoading: allCategoriesLoading } =
-    useFetchAllCategories();
+  const {
+    data: allCategories,
+    isLoading: allCategoriesLoading,
+    error: allCategoriesError,
+  } = useFetchAllCategories();
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["searchUser"] });
@@ -131,51 +134,46 @@ export default function Home() {
       ) : null}
       {isError && <p>{error.message}</p>}
 
+      <h2 className="text-xl font-bold mt-12 mb-4">Visit a category</h2>
       {allCategoriesLoading ? (
-        <div className="flex w-full flex-col gap-4">
-          <div className="skeleton h-4 w-32"></div>
-          <div className="flex flex-col gap-2">
-            <div className="skeleton h-18 w-full"></div>
-            <div className="skeleton h-18 w-full"></div>
-            <div className="skeleton h-18 w-full"></div>
-            <div className="skeleton h-18 w-full"></div>
-            <div className="skeleton h-18 w-full"></div>
-            <div className="skeleton h-18 w-full"></div>
-          </div>
+        <div className="flex w-full flex-col gap-2">
+          <div className="skeleton h-18 w-full"></div>
+          <div className="skeleton h-18 w-full"></div>
+          <div className="skeleton h-18 w-full"></div>
+          <div className="skeleton h-18 w-full"></div>
+          <div className="skeleton h-18 w-full"></div>
+          <div className="skeleton h-18 w-full"></div>
         </div>
-      ) : (
-        allCategories && (
-          <>
-            <h2 className="text-xl font-bold mt-12 mb-4">Visit a category</h2>
-            <ul className="list bg-base-100 rounded-box shadow-md">
-              {Object.entries(allCategories as Record<string, string>).map(
-                ([category, _], index) => {
-                  return (
-                    selectCategories.find((el) => el.name === category) && (
-                      <li
-                        className="list-row flex items-center flex-wrap justify-between"
-                        key={index}
-                      >
-                        <h3>
-                          {
-                            selectCategories.find((el) => el.name === category)
-                              ?.label
-                          }
-                        </h3>
-                        <NavLink to={`/${category}`}>
-                          <button className="btn btn-square btn-ghost">
-                            <MoveRight />
-                          </button>
-                        </NavLink>
-                      </li>
-                    )
-                  );
-                }
-              )}
-            </ul>
-          </>
-        )
-      )}
+      ) : allCategories ? (
+        <ul className="list bg-base-100 rounded-box shadow-md">
+          {Object.entries(allCategories as Record<string, string>).map(
+            ([category, _], index) => {
+              return (
+                selectCategories.find((el) => el.name === category) && (
+                  <li
+                    className="list-row flex items-center flex-wrap justify-between"
+                    key={index}
+                  >
+                    <h3>
+                      {
+                        selectCategories.find((el) => el.name === category)
+                          ?.label
+                      }
+                    </h3>
+                    <NavLink to={`/${category}`}>
+                      <button className="btn btn-square btn-ghost">
+                        <MoveRight />
+                      </button>
+                    </NavLink>
+                  </li>
+                )
+              );
+            }
+          )}
+        </ul>
+      ) : allCategoriesError ? (
+        <p>{allCategoriesError.message}</p>
+      ) : null}
     </>
   );
 }

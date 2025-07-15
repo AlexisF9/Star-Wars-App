@@ -9,7 +9,6 @@ import SinglePlanet from "./pages/SinglePlanet";
 import SingleSpecies from "./pages/SingleSpecies";
 import SingleVehicle from "./pages/SingleVehicle";
 import SingleStarship from "./pages/SingleStarship";
-import SinglePageLayout from "./pages/SinglePageLayout";
 import Category from "./pages/Category";
 import type {
   Character,
@@ -47,16 +46,15 @@ function App() {
 
           <Route path={`/:category`} element={<Category />} />
 
-          <Route element={<SinglePageLayout />}>
-            {Object.entries(categoriesRoutes).map(([category, Component]) => (
-              <Route
-                key={category}
-                path={`/${category}/:id`}
-                element={<Component />}
-              />
-            ))}
-          </Route>
+          {Object.entries(categoriesRoutes).map(([category, Component]) => (
+            <Route
+              key={category}
+              path={`/${category}/:id`}
+              element={<Component />}
+            />
+          ))}
         </Route>
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

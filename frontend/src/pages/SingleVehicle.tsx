@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Vehicle } from "../types";
-import { Error } from "../components/error";
 import { TabsLoader } from "../components/tabsLoader";
 import { Tab } from "../components/tab";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
+import NotFound from "./NotFound";
 
 export default function SingleVehicle() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Vehicle>(
+  const { data, isLoading, isError } = useFetchSingleElement<Vehicle>(
     "vehicles",
     id as string
   );
@@ -41,7 +41,7 @@ export default function SingleVehicle() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (

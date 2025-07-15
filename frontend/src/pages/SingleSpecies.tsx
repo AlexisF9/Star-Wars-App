@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Species } from "../types";
-import { Error } from "../components/error";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
 import { Tab } from "../components/tab";
 import { TabsLoader } from "../components/tabsLoader";
+import NotFound from "./NotFound";
 
 export default function SingleSpecies() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Species>(
+  const { data, isLoading, isError } = useFetchSingleElement<Species>(
     "species",
     id as string
   );
@@ -27,7 +27,7 @@ export default function SingleSpecies() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (

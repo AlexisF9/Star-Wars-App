@@ -2,14 +2,14 @@ import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Planet, Starships, Vehicle } from "../types";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
-import { Error } from "../components/error";
 import { Tab } from "../components/tab";
 import { TabsLoader } from "../components/tabsLoader";
+import NotFound from "./NotFound";
 
 export default function SingleFilm() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Film>(
+  const { data, isLoading, isError } = useFetchSingleElement<Film>(
     "films",
     id as string
   );
@@ -52,7 +52,7 @@ export default function SingleFilm() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (

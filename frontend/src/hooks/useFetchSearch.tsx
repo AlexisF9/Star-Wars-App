@@ -2,17 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useFetchSearch(searchTerm: string, searchCategory: string) {
   const fetchSearch = async (cat: string, text: string) => {
-    const url = `${
-      import.meta.env.VITE_API_URL
-    }/search?category=${cat}&q=${text}`;
-    const response = await fetch(url);
+    let results = null;
 
-    if (!response.ok) {
-      throw new Error(`Something went wrong. Error status: ${response.status}`);
+    try {
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/search?category=${cat}&q=${text}`;
+      const response = await fetch(url);
+
+      results = await response.json();
+    } catch {
+      throw new Error("An error has occurred during data loading");
     }
 
-    const json = await response.json();
-    return json;
+    return results;
   };
 
   return useQuery({

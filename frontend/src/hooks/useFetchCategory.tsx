@@ -2,19 +2,28 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useFetchCategory<T>(category: string) {
   const fetchCategory = async () => {
-    const url = `${import.meta.env.VITE_API_URL}/category/${category}`;
-    const response = await fetch(url);
+    let result = null;
 
-    if (!response.ok) {
-      throw new Error(`Error : ${response.status}`);
+    try {
+      const url = `${import.meta.env.VITE_API_URL}/category/${category}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Data loading error : ${response.status}`);
+      }
+
+      result = await response.json();
+    } catch {
+      throw new Error("Category data loading error");
     }
 
-    const json = await response.json();
-    return json;
+    return result;
   };
 
   return useQuery<T>({
     queryKey: ["fetchCategory"],
     queryFn: () => fetchCategory(),
+    enabled: false,
+    retry: false,
   });
 }

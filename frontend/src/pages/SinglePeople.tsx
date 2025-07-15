@@ -8,23 +8,23 @@ import type {
   Starships,
   Vehicle,
 } from "../types";
-import { Error } from "../components/error";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
 import { Tab } from "../components/tab";
 import { useFetchElementFromUrl } from "../hooks/useFetchElementFromUrl";
 import { MoveRight } from "lucide-react";
 import { TabsLoader } from "../components/tabsLoader";
+import NotFound from "./NotFound";
 
 export default function SinglePeople() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Character>(
+  const { data, isLoading, isError } = useFetchSingleElement<Character>(
     "people",
     id as string
   );
 
   const { data: homeworld, isLoading: loadingHomeworld } =
-    useFetchElementFromUrl<Planet>(data?.homeworld ?? "");
+    useFetchElementFromUrl<Planet>(data?.homeworld ?? null);
 
   const { data: films, isLoading: loadingFilms } =
     useFetchElementsFromUrls<Film>(data?.films ?? []);
@@ -54,7 +54,7 @@ export default function SinglePeople() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (
@@ -78,7 +78,7 @@ export default function SinglePeople() {
         )}
       </div>
 
-      {loadingHomeworld ? (
+      {data?.homeworld && loadingHomeworld ? (
         <div className="flex w-full flex-col gap-2">
           <div className="skeleton h-4 w-16"></div>
           <div className="skeleton h-18 w-full"></div>

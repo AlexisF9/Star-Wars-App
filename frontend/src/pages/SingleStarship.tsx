@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Starships } from "../types";
-import { Error } from "../components/error";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
 import { TabsLoader } from "../components/tabsLoader";
 import { Tab } from "../components/tab";
+import NotFound from "./NotFound";
 
 export default function SingleStarship() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Starships>(
+  const { data, isLoading, isError } = useFetchSingleElement<Starships>(
     "starships",
     id as string
   );
@@ -41,7 +41,7 @@ export default function SingleStarship() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (

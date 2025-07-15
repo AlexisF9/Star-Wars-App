@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useFetchSingleElement } from "../hooks/useFetchSingleElement";
 import type { Character, Film, Planet } from "../types";
-import { Error } from "../components/error";
 import { useFetchElementsFromUrls } from "../hooks/useFetchElementsFromUrls";
 import { Tab } from "../components/tab";
 import { TabsLoader } from "../components/tabsLoader";
+import NotFound from "./NotFound";
 
 export default function SinglePlanet() {
   const { id } = useParams();
 
-  const { data, isLoading, isError, error } = useFetchSingleElement<Planet>(
+  const { data, isLoading, isError } = useFetchSingleElement<Planet>(
     "planets",
     id as string
   );
@@ -35,7 +35,7 @@ export default function SinglePlanet() {
   }
 
   if (isError || !data) {
-    return <Error status={error} />;
+    return <NotFound />;
   }
 
   return (

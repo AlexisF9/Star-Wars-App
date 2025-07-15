@@ -5,11 +5,15 @@ export function useFetchElementsFromUrls<T>(urls: string[]) {
     queries: urls.map((url) => ({
       queryKey: ["fetchFromUrl", url],
       queryFn: async (): Promise<T> => {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/search/url?q=${url}`
-        );
-        if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
-        return await res.json();
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/search/url?q=${url}`
+          );
+          if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
+          return await res.json();
+        } catch {
+          throw new Error("Data loading error");
+        }
       },
       enabled: !!url,
     })),
