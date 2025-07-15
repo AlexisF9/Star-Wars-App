@@ -18,6 +18,9 @@ import type {
   Starships,
   Vehicle,
 } from "./types";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import { PrivateRoute } from "./components/privateRoute";
 
 export const categories = {
   films: { label: "Films", name: "films", type: {} as Film },
@@ -53,6 +56,11 @@ function App() {
               element={<Component />}
             />
           ))}
+
+          <Route path="/login" element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Route>
 
         <Route path="/*" element={<NotFound />} />
