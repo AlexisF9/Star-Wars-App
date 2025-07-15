@@ -6,17 +6,16 @@ import { categories } from "../App";
 import NotFound from "./NotFound";
 import { Error } from "../components/error";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Category() {
   const params = useParams();
   const [results, setResults] = useState<(typeof allCategoriesType)[]>([]);
 
-  const isGoodCategory = Object.values(categories).find(
+  const isGoodCategory = Object.values(categories).some(
     (el) => el.name === params.category
-  )
-    ? true
-    : false;
-
+  );
   const categoryInfos = Object.values(categories).find(
     (el) => el.name === params.category
   );
@@ -25,11 +24,36 @@ export default function Category() {
     (typeof allCategoriesType)[]
   >(params.category as string);
 
+  const isFilm = (el: typeof allCategoriesType): el is Film => {
+    return el.category === categories.films.name;
+  };
+
+  const { register, watch } = useForm<{
+    searchText: string;
+  }>({
+    defaultValues: {
+      searchText: "",
+    },
+  });
+
+  const searchText = watch("searchText");
+  const debouncedSearchTerm = useDebounce(searchText, 400);
+
   useEffect(() => {
-    if (data && data?.length > 0) {
-      setResults(data);
+    if (!debouncedSearchTerm) {
+      setResults(data ?? []);
+      return;
     }
-  }, [data]);
+
+    if (data && data.length > 0) {
+      const newResults = data.filter((el) => {
+        const label = isFilm(el) ? el.title : el.name;
+        return label.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
+      });
+
+      setResults(newResults);
+    }
+  }, [debouncedSearchTerm, data]);
 
   if (!isGoodCategory) {
     return <NotFound />;
@@ -52,38 +76,17 @@ export default function Category() {
     );
   }
 
-  const isFilm = (el: typeof allCategoriesType): el is Film => {
-    return el.category === categories.films.name;
-  };
-
-  const filteredResults = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const search = formData.get("test");
-
-    if (data && data.length > 0) {
-      const newResults = data.filter((el) => {
-        const label = isFilm(el) ? el.title : el.name;
-        return label.toLowerCase().includes((search as string).toLowerCase());
-      });
-
-      setResults(newResults);
-    }
-  };
-
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">{categoryInfos?.label}</h2>
 
-      <form onChange={(e) => filteredResults(e)}>
+      <form onSubmit={(e) => e.preventDefault()} className="mb-4">
         <label className="input w-full">
           <Search width={20} />
           <input
-            name="test"
             type="search"
-            required
             placeholder="Search element"
+            {...register("searchText")}
           />
         </label>
       </form>
@@ -108,7 +111,9 @@ export default function Category() {
         </ul>
       ) : error ? (
         <Error message={error.message} />
-      ) : null}
+      ) : (
+        <p>No results found for your search.</p>
+      )}
     </div>
   );
 }

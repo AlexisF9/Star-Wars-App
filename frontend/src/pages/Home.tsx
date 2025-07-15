@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MoveRight, Search } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -8,6 +8,7 @@ import { Loader } from "../components/loader";
 import { useFetchAllCategories } from "../hooks/useFetchAllCategories";
 import { categories } from "../App";
 import type { allCategoriesType, Film } from "../types";
+import { useForm } from "react-hook-form";
 
 export default function Home() {
   const selectCategories = [
@@ -21,25 +22,26 @@ export default function Home() {
     })),
   ];
 
-  const [searchCategory, setSearchCategory] = useState(
-    selectCategories[0].name
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
   const queryClient = useQueryClient();
+
+  const { register, watch } = useForm<{
+    searchText: string;
+    searchCategory: string;
+  }>({
+    defaultValues: {
+      searchText: "",
+      searchCategory: selectCategories[0].name,
+    },
+  });
+
+  const searchTerm = watch("searchText");
+  const searchCategory = watch("searchCategory");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const { data, isLoading, refetch, isError, error } = useFetchSearch(
     debouncedSearchTerm,
     searchCategory
   );
-
-  const {
-    data: allCategories,
-    isLoading: allCategoriesLoading,
-    error: allCategoriesError,
-  } = useFetchAllCategories();
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["searchUser"] });
@@ -50,7 +52,13 @@ export default function Home() {
     ) {
       refetch();
     }
-  }, [searchCategory, debouncedSearchTerm, refetch]);
+  }, [debouncedSearchTerm, searchCategory, refetch]);
+
+  const {
+    data: allCategories,
+    isLoading: allCategoriesLoading,
+    error: allCategoriesError,
+  } = useFetchAllCategories();
 
   const isFilm = (el: typeof allCategoriesType): el is Film => {
     return el.category === categories.films.name;
@@ -59,11 +67,15 @@ export default function Home() {
   return (
     <>
       <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
-      <form className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2">
+
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2"
+      >
         <select
           defaultValue={selectCategories[0].name}
           className="select w-full md:w-fit"
-          onChange={(e) => setSearchCategory(e.target.value)}
+          {...register("searchCategory")}
         >
           {selectCategories?.length > 0 &&
             selectCategories.map((item, index) => {
@@ -80,7 +92,7 @@ export default function Home() {
             type="search"
             required
             placeholder="Search element"
-            onChange={(e) => setSearchTerm(e.target.value)}
+            {...register("searchText")}
           />
         </label>
       </form>
