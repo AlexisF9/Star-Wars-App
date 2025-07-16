@@ -11,7 +11,7 @@ export const login = (req: Request, res: Response) => {
 
   if (validateUser(username, password)) {
     const token = jwt.sign({ username }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-    return res.json({ token });
+    return res.json({ token: token, user: username });
   }
 
   return res.status(401).json({ message: 'Invalid auth' });

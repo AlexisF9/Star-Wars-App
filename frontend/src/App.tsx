@@ -20,6 +20,10 @@ import type {
 } from "./types";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import { useFetchUser } from "./hooks/useFetchUser";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setAuthReady, setCredentials } from "./features/auth/authSlice";
 import { PrivateRoute } from "./components/privateRoute";
 
 export const categories = {
@@ -32,6 +36,9 @@ export const categories = {
 };
 
 function App() {
+  const { data: userData, isLoading } = useFetchUser();
+  const dispatch = useDispatch();
+
   const categoriesRoutes = {
     films: SingleFilm,
     people: SinglePeople,
@@ -40,6 +47,22 @@ function App() {
     vehicles: SingleVehicle,
     starships: SingleStarship,
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!isLoading) {
+      // si useFetchUser me renvoi le user on set les credentials
+      // sinon on passe le AuthReady à true
+      if (token && userData) {
+        dispatch(
+          setCredentials({ token, user: { username: userData.username } })
+        );
+      } else {
+        dispatch(setAuthReady());
+      }
+    }
+  }, [userData, isLoading]);
 
   return (
     <BrowserRouter>

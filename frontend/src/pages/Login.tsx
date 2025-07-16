@@ -2,18 +2,13 @@ import { useEffect, useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../features/auth/authSlice";
 
 export default function Login() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      navigate("/");
-    }
-  }, []);
+  const dispatch = useDispatch();
 
   const { register, handleSubmit, watch } = useForm<{
     username: string;
@@ -30,11 +25,11 @@ export default function Login() {
 
   const { data, isLoading, refetch, isError } = useLogin(username, password);
 
-  const SubmitHandler = async (data: {
+  const SubmitHandler = async (inputs: {
     username: string;
     password: string;
   }) => {
-    if (data.username && data.password) {
+    if (inputs.username && inputs.password) {
       refetch();
     }
   };
@@ -42,6 +37,9 @@ export default function Login() {
   useEffect(() => {
     if (data && data.token) {
       localStorage.setItem("token", data.token);
+      dispatch(
+        setCredentials({ token: data.token, user: { username: data.user } })
+      );
       setMessage("Connexion réussie !");
       navigate("/dashboard");
     }
