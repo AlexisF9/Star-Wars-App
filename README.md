@@ -69,6 +69,7 @@ Environnement technique :
 ### Bonus réalisés :
 - Mise en place d’un système d’authentification (basique)
 - Identifiants fixes
+- Création d’un middleware pour protéger l’endpoint de recherche
 
 Améliorations possible :
 - Ajout de la création/edit/supression de compte
