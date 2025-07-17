@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
 
-  const { register, handleSubmit, watch } = useForm<{
+  const { register, handleSubmit, reset } = useForm<{
     username: string;
     password: string;
   }>({
@@ -20,34 +20,28 @@ export default function Login() {
     },
   });
 
-  const username = watch("username");
-  const password = watch("password");
+  const { mutateAsync, isPending } = useLogin();
 
-  const { data, isLoading, refetch, isError } = useLogin(username, password);
-
-  const SubmitHandler = async (inputs: {
+  const SubmitHandler = async ({
+    username,
+    password,
+  }: {
     username: string;
     password: string;
   }) => {
-    if (inputs.username && inputs.password) {
-      refetch();
-    }
-  };
-
-  useEffect(() => {
-    if (data && data.token) {
+    try {
+      const data = await mutateAsync({ username, password });
       localStorage.setItem("token", data.token);
       dispatch(
         setCredentials({ token: data.token, user: { username: data.user } })
       );
       setMessage("Connexion réussie !");
+      reset();
       navigate("/dashboard");
-    }
-
-    if (isError) {
+    } catch (error) {
       setMessage("Identifiants invalides");
     }
-  }, [data, isError]);
+  };
 
   return (
     <div>
@@ -62,7 +56,6 @@ export default function Login() {
             placeholder="Username"
             className="input flex-1"
             required
-            value={username}
             {...register("username")}
           />
           <input
@@ -70,12 +63,11 @@ export default function Login() {
             placeholder="Password"
             className="input flex-1"
             required
-            value={password}
             {...register("password")}
           />
         </div>
-        <button className="btn" type="submit" disabled={isLoading ?? false}>
-          {isLoading ? (
+        <button className="btn" type="submit" disabled={isPending ?? false}>
+          {isPending ? (
             <span className="loading loading-spinner loading-sm"></span>
           ) : (
             "Login"

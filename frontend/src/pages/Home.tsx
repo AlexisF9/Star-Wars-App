@@ -9,6 +9,8 @@ import { useFetchAllCategories } from "../hooks/useFetchAllCategories";
 import { categories } from "../App";
 import type { allCategoriesType, Film } from "../types";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
 
 export default function Home() {
   const selectCategories = [
@@ -23,6 +25,8 @@ export default function Home() {
   ];
 
   const queryClient = useQueryClient();
+
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const { register, watch } = useForm<{
     searchText: string;
@@ -66,14 +70,15 @@ export default function Home() {
 
   return (
     <>
-      <h2 className="text-2xl font-bold text-center mb-4">Search</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-center mb-4">Search</h2>
 
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="bg-base-200 -ml-4 -mr-4 md:mr-[inherit] md:ml-[inherit] md:rounded-full p-6 mb-6 flex flex-col md:flex-row gap-2"
+        className=" flex flex-col md:flex-row gap-2"
       >
         <select
           defaultValue={selectCategories[0].name}
+          disabled={!user}
           className="select w-full md:w-fit"
           {...register("searchCategory")}
         >
@@ -92,10 +97,19 @@ export default function Home() {
             type="search"
             required
             placeholder="Search element"
+            disabled={!user}
             {...register("searchText")}
           />
         </label>
       </form>
+      {!user && (
+        <div className="flex flex-col gap-2 items-center mt-4">
+          <h2 className="text-lg">Log in to search</h2>
+          <NavLink to={"/login"}>
+            <button className="btn">Login</button>
+          </NavLink>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="w-fit mx-auto">

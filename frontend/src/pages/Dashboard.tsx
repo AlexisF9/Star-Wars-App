@@ -23,7 +23,7 @@ const Dashboard = () => {
     <div>
       <div className="flex flex-col gap-4 mb-6">
         <h2 className="text-xl font-bold">Dashboard</h2>
-        <p>Welcome {data.username} !</p>
+        {data && data?.username && <p>Welcome {data.username} !</p>}
       </div>
       <button onClick={handleLogout} className="btn btn-soft btn-error">
         <span className="flex gap-2">

@@ -1,7 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-export function useLogin(username: string, password: string) {
-  const login = async () => {
+export function useLogin() {
+  const login = async ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
@@ -21,10 +27,5 @@ export function useLogin(username: string, password: string) {
     }
   };
 
-  return useQuery({
-    queryKey: ["fetchUser", username],
-    queryFn: () => login(),
-    enabled: false,
-    retry: false,
-  });
+  return useMutation({ mutationFn: login });
 }

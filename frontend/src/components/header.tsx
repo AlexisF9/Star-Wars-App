@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import type { RootState } from "../store";
-import { LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import { logout } from "../features/auth/authSlice";
 
 export function Header() {
@@ -15,9 +15,9 @@ export function Header() {
 
   return (
     <header className="mb-12 border-b py-6 border-neutral-300">
-      <div className="max-w-5xl px-4 w-full mx-auto flex items-center gap-4 justify-between">
+      <div className="max-w-5xl px-4 w-full mx-auto flex flex-wrap items-center gap-4 justify-between">
         <NavLink to={"/"}>
-          <h1 className="bold text-2xl">
+          <h1 className="bold text-xl md:text-2xl">
             🚀 Star Wars Rebels Alliance Search System
           </h1>
         </NavLink>
@@ -38,7 +38,9 @@ export function Header() {
             </>
           ) : (
             <NavLink to={"/login"}>
-              <button className="btn">Login</button>
+              <button className="btn btn-circle" aria-label="Login">
+                <LogIn width={16} />
+              </button>
             </NavLink>
           )}
         </div>
