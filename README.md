@@ -51,6 +51,8 @@ Ajouter un fichier .env à la racine:
 SWAPI_BASE_URL=https://swapi.info/api
 PORT=3000
 JWT_SECRET=secretkey
+FIXED_USERNAME=toto
+FIXED_PASSWORD=test
 ```
 Lancer le back :
 ```
