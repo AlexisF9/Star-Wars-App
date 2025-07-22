@@ -1,6 +1,3 @@
-export const FIXED_USERNAME = 'Luke';
-export const FIXED_PASSWORD = 'DadSucks';
-
 export function validateUser(username: string, password: string): boolean {
-  return username === FIXED_USERNAME && password === FIXED_PASSWORD;
+  return username === process.env.FIXED_USERNAME && password === process.env.FIXED_PASSWORD;
 }
