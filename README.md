@@ -1,4 +1,4 @@
-# Test technique Fastory
+# Projet Star Wars full stack
 
 Node version : v24.2.0
 
@@ -26,16 +26,13 @@ npm run dev
 - React Router, React Hook Form
 - TailwindCSS, Daisy UI (composants ui), Lucide (icons)
 
-### Bonus réalisés :
+### Réalisations :
 - Fiches détaillées
 - Router React
-- Tailwind
-- Redux (Connexion de l'user dans l'app)
 - Debounce sur le champ de recherche (hook custom useDebounce)
 - Filtres par type de résultat
 - Authentification frontend (ajout de la page dashboard, redirigé si non connexion)
 - Responsive design
-- React Hook Form
 
 ### Améliorations possibles :
 - Page de création de compte
@@ -66,9 +63,8 @@ npm run dev
 - axios (Fetch l'api Swapi)
 - jwt (Utilisation et création d'un token pour l'user)
 
-### Bonus réalisés :
-- Mise en place d’un système d’authentification (basique)
-- Identifiants fixes
+### Réalisations :
+- Mise en place d’un système d’authentification (basique avec identifiants fixes)
 - Création d’un middleware pour protéger l’endpoint de recherche
 
 ### Améliorations possible :
